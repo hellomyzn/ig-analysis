@@ -1,0 +1,23 @@
+version: '3.6'
+services:
+  python:
+    build:
+      context: .
+      dockerfile: ./infra/docker/python/Dockerfile
+    container_name: 'python'
+    hostname: 'python'
+    working_dir: '/opt/work/'
+    restart: always
+    tty: true
+    volumes:
+      - type: bind
+        source: ./src
+        target: /opt/work
+    environment:
+      - TZ=Asia/Tokyo
+      - LOG_LEVEL=INFO
+    networks:
+      - internal_network
+
+networks:
+  internal_network:
