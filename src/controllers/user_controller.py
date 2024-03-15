@@ -18,7 +18,12 @@ from services import UserService
 @dataclass
 class UserController(object):
     """user info controller"""
-    service: UserService = field(init=False, default=UserService())
+    service: UserService = field(init=True, default=None)
+
+    def __init__(self):
+        self.service = UserService()
 
     def add(self):
+        """add user info
+        """
         self.service.add()
