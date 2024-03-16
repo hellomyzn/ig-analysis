@@ -29,4 +29,11 @@ class UserController(object):
         self.service.add()
 
     def get_media(self):
+        """media
+        """
         self.service.get_media()
+
+    def get_insights(self):
+        """insights
+        """
+        self.service.get_insights()

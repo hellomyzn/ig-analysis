@@ -30,3 +30,6 @@ class UserService(object):
 
     def get_media(self):
         media = self.ig_repo.get_media()
+
+    def get_insights(self):
+        media = self.ig_repo.get_insights_weekly()
