@@ -27,4 +27,3 @@ class UserService(object):
         """add user info to repo
         """
         user_info = self.ig_repo.get()
-        print(user_info)
