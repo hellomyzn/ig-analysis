@@ -27,3 +27,6 @@ class UserService(object):
         """add user info to repo
         """
         user_info = self.ig_repo.get()
+
+    def get_media(self):
+        media = self.ig_repo.get_media()

@@ -27,3 +27,6 @@ class UserController(object):
         """add user info
         """
         self.service.add()
+
+    def get_media(self):
+        self.service.get_media()
