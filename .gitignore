@@ -7,3 +7,4 @@
 !/src/src/**/
 !/src/src/**/.gitkeep
 src/common/config/config.ini
+src/common/config/config.dev.ini
