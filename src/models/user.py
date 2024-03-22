@@ -21,11 +21,10 @@ class User(Model):
     """user data class"""
     id: int | None = field(init=True, default=None)
     username: str | None = field(init=True, default=None)
-    followers_count: str | None = field(init=True, default=None)
+    followers_count: int | None = field(init=True, default=None)
+    media_count: int | None = field(init=True, default=None)
     biography: str | None = field(init=True, default=None)
     website: str | None = field(init=True, default=None)
-    media_count: str | None = field(init=True, default=None)
-    media: str | None = field(init=True, default=None)
 
     @classmethod
     def from_dict(cls, dict_: dict):
@@ -41,10 +40,9 @@ class User(Model):
             "id": dict_.get("id"),
             "username": dict_.get("username"),
             "followers_count": dict_.get("followers_count"),
+            "media_count": dict_.get("media_count"),
             "biography": dict_.get("biography"),
             "website": dict_.get("website"),
-            "media_count": dict_.get("media_count"),
-            "media": dict_.get("media")
         })
 
     def to_dict(self, without_none_field: bool = False) -> dict:
@@ -58,9 +56,11 @@ class User(Model):
         """
         dict_ = {
             "id": self.id,
-            "hoge": self.hoge,
-            "fuga": self.fuga,
-            "piyo": self.piyo
+            "username": self.username,
+            "followers_count": self.followers_count,
+            "media_count": self.media_count,
+            "biography": self.biography,
+            "website": self.website
         }
 
         if without_none_field:
