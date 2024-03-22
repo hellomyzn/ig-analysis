@@ -36,14 +36,14 @@ class UserRepository(IgBaseRepository):
         "media": "media"
     })
 
-    def get(self) -> dict:
+    def get_user_info(self) -> User:
         """get user info
 
         Raises:
             RequestException: failed to request a url
 
         Returns:
-            dict: user info
+            User: user model
         """
         fields = "biography,id,followers_count,media_count,username,website"
         url = (f"{self.BASE_URL}/{self.API_VERSION}/{self.IG_USER_ID}?"
@@ -82,9 +82,10 @@ class UserRepository(IgBaseRepository):
         while has_next:
             try:
                 res = requests.get(url, timeout=30).json()
-            except Exception as exc:
-                error("failed to request user media. {0}: {1}", exc.__class__.__name__, exc)
-                raise Exception
+            except requests.RequestException as exc:
+                mes = "failed to request user media."
+                error("{0} {1}: {2}", mes, exc.__class__.__name__, exc)
+                raise requests.RequestException(mes) from exc
 
             media = res["data"]
             debug("responded user media. {0}", len(media))
@@ -94,8 +95,7 @@ class UserRepository(IgBaseRepository):
             if has_next:
                 url = res["paging"]["next"]
 
-        debug("responded total user media: {0}", len(all_media))
-        debug(all_media)
+        debug("responded user media: {0}", len(all_media))
         return all_media
 
     def get_insights_daily(self) -> dict:
