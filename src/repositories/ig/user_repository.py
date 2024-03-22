@@ -15,7 +15,9 @@ from dataclasses import dataclass, field
 #########################################################
 from common.log import debug, error
 from common.config import Config
+from repositories import ModelAdapter
 from repositories.ig import IgBaseRepository
+from models import User
 
 CONFIG = Config().config
 
@@ -24,12 +26,21 @@ CONFIG = Config().config
 class UserRepository(IgBaseRepository):
     """user repository"""
     IG_USER_ID: str = field(init=False, default=CONFIG["IG"]["USER_ID"])
+    USER_ADAPTER = ModelAdapter(User, {
+        "id": "id",
+        "username": "username",
+        "followers_count": "followers_count",
+        "biography": "biography",
+        "website": "website",
+        "media_count": "media_count",
+        "media": "media"
+    })
 
     def get(self) -> dict:
         """get user info
 
         Raises:
-            Exception: failed to request a url
+            RequestException: failed to request a url
 
         Returns:
             dict: user info
@@ -40,13 +51,19 @@ class UserRepository(IgBaseRepository):
         debug("request user info to {0}", url)
 
         try:
-            res = requests.get(url, timeout=30).json()
-            debug("responded user info: {0}", res)
-        except Exception as exc:
-            error("failed to request user info. {0}: {1}", exc.__class__.__name__, exc)
-            raise Exception
+            res = requests.get(url, timeout=30)
+        except requests.RequestException as exc:
+            mes = "failed to request user info."
+            error("{0} {1}: {2}", mes, exc.__class__.__name__, exc)
+            raise requests.RequestException(mes) from exc
 
-        return res
+        user_dict = res.json()
+        debug("responded user info: {0}", user_dict)
+        if not user_dict:
+            debug("user not found.")
+
+        user = self.USER_ADAPTER.to_model(user_dict)
+        return user
 
     def get_media(self) -> dict:
         """get media which is feed
@@ -78,6 +95,7 @@ class UserRepository(IgBaseRepository):
                 url = res["paging"]["next"]
 
         debug("responded total user media: {0}", len(all_media))
+        debug(all_media)
         return all_media
 
     def get_insights_daily(self) -> dict:
